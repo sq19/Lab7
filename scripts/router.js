@@ -5,7 +5,7 @@ export const router = {};
 /**
  * Changes the "page" (state) that your SPA app is currently set to
  */
-router.setState = function() {
+router.setState = function(state, goBack) {
   /**
    * - There are three states that your SPA app will have
    *    1. The home page
@@ -35,4 +35,40 @@ router.setState = function() {
    *    1. You may add as many helper functions in this file as you like
    *    2. You may modify the parameters of setState() as much as you like
    */
+  let url;
+
+  if (state == null || state.name == "home") {
+    let body = document.querySelector("body");
+    body.className = "";
+    let title = document.querySelector("header h1");
+    title.innerText = "Journal Entries";
+    url = window.location.origin;
+  }
+
+  else if (state.name == "settings") {
+    let body = document.querySelector("body");
+    body.className = "";
+    body.classList.add("settings");
+    let title = document.querySelector("header h1");
+    title.innerText = "Settings";
+    url = "/#settings";
+  }
+
+  else if (state.name == "entry") {
+    let body = document.querySelector("body");
+    body.className = "";
+    body.classList.add("single-entry");
+    body.removeChild(body.querySelector("entry-page"));
+    let num = state.id;
+    let journalPage = document.createElement('entry-page');
+    journalPage.entry = document.getElementById(num).entry;
+    body.appendChild(journalPage);
+    let title = document.querySelector("h1");
+    title.innerText = "Entry " + num;
+    url = "/#entry" + num;
+  }
+
+  if (!goBack) {
+    window.history.pushState(state, "", url);
+  }
 }
